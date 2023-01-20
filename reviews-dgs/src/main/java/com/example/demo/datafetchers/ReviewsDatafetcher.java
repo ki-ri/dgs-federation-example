@@ -1,32 +1,42 @@
 package com.example.demo.datafetchers;
 
-import com.example.demo.generated.types.Review;
-import com.example.demo.generated.types.Show;
-import com.netflix.graphql.dgs.DgsComponent;
-import com.netflix.graphql.dgs.DgsData;
-import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
-import com.netflix.graphql.dgs.DgsEntityFetcher;
+import com.example.demo.generated.types.*;
+import com.netflix.graphql.dgs.*;
 
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @DgsComponent
 public class ReviewsDatafetcher {
 
     Map<String, List<Review>> reviews = new HashMap<>();
+    Map<String, CareManager> careManagerMap = new HashMap<>();
 
     public ReviewsDatafetcher() {
         List<Review> review1 = new ArrayList<>();
-        review1.add(new Review(5));
-        review1.add(new Review(4));
-        review1.add(new Review(5));
+        review1.add(new Review(5, "hoge"));
+        review1.add(new Review(4, "foo"));
+        review1.add(new Review(5, "bar"));
         reviews.put("1", review1);
 
         List<Review> review2 = new ArrayList<>();
-        review2.add(new Review(3));
-        review2.add(new Review(5));
+        review2.add(new Review(3, "fuga"));
+        review2.add(new Review(5, "piyo"));
         reviews.put("2", review2);
+
+
+
+        CareManager careManager1 = new CareManager("care manager", "1", new Office("1"), new Address("China", "Shanghai"));
+        CareManager careManager2 = new CareManager("care manager", "2", new Office("2"), new Address("Japan", "Yokohama"));
+        careManagerMap.put(careManager1.getOfficeId(), careManager1);
+        careManagerMap.put(careManager2.getOfficeId(), careManager2);
+    }
+
+    @DgsQuery
+    public CareManager careManager(@InputArgument String officeId) {
+        return careManagerMap.get(officeId);
     }
 
     @DgsEntityFetcher(name = "Show")
