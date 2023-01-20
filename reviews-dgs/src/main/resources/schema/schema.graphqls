@@ -1,8 +1,35 @@
-type Show @key(fields: "id") @extends {
-    id: ID @external
+extend schema
+@link(
+    url: "https://specs.apollo.dev/federation/v2.0",
+    import: ["@extends", "@external", "@inaccessible", "@key", "@override", "@provides", "@requires", "@shareable", "@tag"]
+)
+
+type Query {
+    careManager(officeId: ID): CareManager
+}
+
+type Show @key(fields: "id") {
+    id: ID
     reviews: [Review]
 }
 
 type Review {
     starRating: Int
+    user: String
+}
+
+type CareManager {
+    name: String
+    officeId: String
+    office: Office
+    address: Address
+}
+
+type Office @key(fields: "id") {
+    id: ID
+}
+
+type Address @shareable{
+    country: String
+    city: String
 }
